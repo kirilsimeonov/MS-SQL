@@ -1,0 +1,15 @@
+CREATE TRIGGER tr_SumUpdate ON Accounts
+FOR UPDATE
+AS
+     IF EXISTS
+     (
+         SELECT *
+           FROM inserted
+     )
+         -- UPDATE Statement is execute
+         INSERT INTO Logs(AccountId, OldSum, NewSum)
+              SELECT d.Id, 
+                     d.Balance, 
+                     i.Balance
+                FROM deleted AS d
+                     INNER JOIN inserted AS i ON i.Id = d.Id;
